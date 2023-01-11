@@ -1,3 +1,4 @@
+//the below removes the need to type './src' when importing files
 {
   "compilerOptions": {
     "baseUrl": "./src"

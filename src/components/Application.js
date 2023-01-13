@@ -1,26 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+//components
 import DayList from "./DayList";
 import Appointment from "./Appointment";
+
+//styling
 import "components/Application.scss";
 
-const days = [
-  {
-    id: 1,
-    name: "Monday",
-    spots: 2,
-  },
-  {
-    id: 2,
-    name: "Tuesday",
-    spots: 5,
-  },
-  {
-    id: 3,
-    name: "Wednesday",
-    spots: 0,
-  },
-];
-
+//hardcoded data
 const appointments = {
   "1": {
     id: 1,
@@ -63,7 +51,15 @@ const appointments = {
 
 export default function Application(props) {
   const [day, setDay] = useState('Monday');
+  const [days, setDays] = useState([]);
 
+  useEffect(() => {
+    const daysRequest = axios.get('/api/days');
+    daysRequest.then((res) => {
+      console.log('res', res.data);
+      setDays(res.data);
+    })
+  }, [day])
 
   const listOfApts = Object.values(appointments).map((apt) =>
     <Appointment
@@ -157,4 +153,52 @@ return(
 {list}
 </ul>
 )
+
+//Nally lecture
+use effect to clean up components after rendering?
+what is the extent to the things you can change with useEffect? eg doc title. 
+how would you decide where to put useEffect with multiple children/parent components?
+
+const [count, setCount] = useState(0)
+useEffect(()=>{
+document.title= `count= ${count}
+console.log("document titel changed") //this returns undefined, which is allowed according to the rules of useeeffect hook
+ return ()=> {
+  //multiline function that gets returned OPTIONAL
+ }
+}, [count]) //optional, with NO array, the function will still run on every render . with and EMPTY array, it will only run once after rendering.dependency array eg manage these side effects only when this is changed
+
+
+useEffect(()=>{
+const intervalReference = setTimeout(etc)
+ return ()=> {
+  clearInterval(intervalReference)
+ }
+}, []) //optional, with NO array, the function will still run on every render . with and EMPTY array, it will only run once after rendering.dependency array eg manage these side effects only when this is changed
+
+when pulling data to set state
+
+const [ingredient, setIngredient] = useState([]) // matches the shape of the data by using an empty array
+const [loading, setLoading] = useState(true)
+npm i axios
+import axios from 'axios'
+
+useEffect(()=>{
+  console.log('fetching data using axios')
+ const ingredientsPromise = axios.get('route to data/url');
+ ingredientsPromise.then((response)=>{
+  console.log('response success', response.data)
+  setIngredient(response.data);
+  setLoading(false);
+}).catch((e)=>{ console.log('error in catch', e)})
+}, []) //empty array will just run it once
+
+with ingredients.map() it will now
+
+{loading && <p>Loading...</p>}
+
+//Breakout
+
+with mutiple props
+const {name, id, onSave} = props
 */

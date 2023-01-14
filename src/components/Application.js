@@ -5,67 +5,52 @@ import axios from "axios";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
 
+//helpers
+import { getAppointmentsForDay, getInterview } from "helpers/selectors";
+
 //styling
 import "components/Application.scss";
 
-//hardcoded data
-const appointments = {
-  "1": {
-    id: 1,
-    time: "12pm",
-  },
-  "2": {
-    id: 2,
-    time: "1pm",
-    interview: {
-      student: "Lydia Miller-Jones",
-      interviewer: {
-        id: 3,
-        name: "Sylvia Palmer",
-        avatar: "https://i.imgur.com/LpaY82x.png",
-      }
-    }
-  },
-  "3": {
-    id: 3,
-    time: "2pm",
-  },
-  "4": {
-    id: 4,
-    time: "3pm",
-    interview: {
-      student: "Archie Andrews",
-      interviewer: {
-        id: 4,
-        name: "Cohana Roy",
-        avatar: "https://i.imgur.com/FK8V841.jpg",
-      }
-    }
-  },
-  "5": {
-    id: 5,
-    time: "4pm",
-  }
-};
-
 
 export default function Application(props) {
-  const [day, setDay] = useState('Monday');
-  const [days, setDays] = useState([]);
+
+  //using state object to manage multiple states held within
+  const [state, setState] = useState({
+    day: "Monday", //default start day
+    days: [],
+    appointments: {},
+    interviewers: {}
+  });
+
+  const setDay = day => setState({ ...state, day });
 
   useEffect(() => {
-    const daysRequest = axios.get('/api/days');
-    daysRequest.then((res) => {
-      console.log('res', res.data);
-      setDays(res.data);
-    })
-  }, [day])
+    Promise.all([
+      axios.get('/api/days'),
+      axios.get('/api/appointments'),
+      axios.get('/api/interviewers')
+    ]).then((all) => {
+      // console.log(all[0]); // first
+      // console.log(all[1]); // second
+      // console.log(all[2]); // third
+      setState(prev => ({ ...prev, days: all[0].data, appointments: all[1].data, interviewers: all[2].data }));
+    });
+  }, [])
 
-  const listOfApts = Object.values(appointments).map((apt) =>
-    <Appointment
-      key={apt.id}
-      {...apt}
-    />)
+
+  //apts/int logic
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  
+  const listOfApts = dailyAppointments.map((apt) => {
+    const interview = getInterview(state, apt.interview);
+    return (
+      <Appointment
+        key={apt.id}
+        {...apt}
+        interview={interview}
+      />
+    )
+  });
 
 
   return (
@@ -79,8 +64,8 @@ export default function Application(props) {
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
           <DayList
-            days={days}
-            value={day}
+            days={state.days}
+            value={state.day}
             onChange={setDay}
           />
 
@@ -201,4 +186,82 @@ with ingredients.map() it will now
 
 with mutiple props
 const {name, id, onSave} = props
+
+
+//Custom hooks Andy
+If a helper function tracks state, use custom hooks. Always a .js file.
+If not, its just a helper function.
+
+in hooks/useDocumentTitle.js
+const useDocumentTitle = (title) => {
+  useEffect(()=>{
+    document.title = title
+  }, [title]) // track changes to title and render when it changes
+}
+
+then in app.js
+useDocumentTitle(title);
+
+Mouseover
+const Mousemove = () => {
+  const [coords, setCoords] =useState({x:0, y:0})
+
+useEffect(()=> {
+  const mouseMoveListener = (event)=> {
+  console.log(event.clientX, event.clientY)
+  setCoords({x:event.clientX, y:event.ClientY});
+
+document.addEventListener('mousemove', mouseMoveListener)
+
+  const cleanUp = () => {
+    document.removeEventListener('mousemove', mouseMoveListener)
+  }
+return cleanup;
+
+}, [])
+
+return (
+  <div>{coords.x coords.y}</>
+  )
+})
+
+const useInput = (initalValue) => {
+
+const [value, setValue] = useState(initialValue)
+
+const onChange = (event) => setValue(event.target.value);
+
+const clear = () => setValue('')
+
+return {
+  value, 
+  onChange,
+  onBlur : clear
+}
+}
+
+in app.js
+const Component (props) => {
+
+const userNameInput = useInput('');
+
+return ( 
+<input
+value= {usernameInput.value}
+onChange={usernameInput.onChange}
+onBlur={usernameInput.onBlur}
+>
+OR
+<input
+{...usernameInput}
+>
+
+awesome-react-hooks
+my-json-server-typicode
+
+setHistory(prev => ([...prev, 'CREATE']))
+
+useVisualMode tracks the state of each appointment in a history array in appointment item. so that back button can be used to be back track to a previous state
+
+useApplicationData will contain all the app data logic eg const state=useApplicationData() in app 
 */

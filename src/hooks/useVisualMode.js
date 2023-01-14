@@ -5,15 +5,17 @@ export default function useVisualMode(initial) {
   const [history, setHistory] = useState([initial])
 
   //TBC NEED MENTOR CALL
-  function transition(mode, replace = false) {
+  function transition(newMode, replace = false) {
     //console.log('mode', mode);
-    setMode(mode);
+    setMode(newMode);
 
     if (!replace) {
-      history.push(mode);
+      setHistory(prev => [...prev, newMode]);
     }
     else {
-      setHistory([initial, mode]);
+      const historyCopy = [...history];
+      historyCopy.pop();
+      setHistory([...historyCopy, newMode]);
     }
   }
 
@@ -22,8 +24,10 @@ export default function useVisualMode(initial) {
 
   function back() {
     if (history.length > 1) {
-      history.pop();
-      setMode(history[history.length - 1])
+      const historyCopy = [...history];
+      historyCopy.pop();
+      setMode(historyCopy[historyCopy.length - 1]);
+      setHistory(historyCopy);
     }
   };
 

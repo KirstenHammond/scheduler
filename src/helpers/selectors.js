@@ -6,30 +6,13 @@
  */
 
 export function getAppointmentsForDay(state, day) {
-  const allAptArr = [];
-
-  if (state.days.length === 0) { return allAptArr };
-
-  const filtResult = state.days.filter(filtDay => {
-    if (filtDay.name !== day) {
-      return false;
-    } return true;
-  })
-  if(filtResult.length === 0) {return allAptArr};
-  
-  const dayAptArr = filtResult[0].appointments;
-
-  Object.values(state.appointments).filter(apt => {
-    for (let aptDay of dayAptArr) {
-      if (aptDay === apt.id) {
-        allAptArr.push(apt);
-      }
-    }
-  });
-
-  return allAptArr;
-
-};
+  const findDay = state.days.find(d => d.name === day);
+  if (!findDay) {
+    return [];
+  }
+  const aptsForDay = findDay.appointments.map(id => state.appointments[id]);
+  return aptsForDay;
+}
 
 /**
  * Takes in the state object and interview object to render details about each interview
@@ -56,27 +39,10 @@ export function getInterview(state, interview){
  */
 
 export function getInterviewersForDay(state, day) {
-  const allIntArr = [];
-
-  if (state.days.length === 0) { return allIntArr };
-
-  const filtResult = state.days.filter(filtDay => {
-    if (filtDay.name !== day) {
-      return false;
-    } return true;
-  })
-  if(filtResult.length === 0) {return allIntArr};
-  
-  const dayIntArr = filtResult[0].interviewers;
-
-  Object.values(state.interviewers).filter(int => {
-    for (let intDay of dayIntArr) {
-      if (intDay === int.id) {
-        allIntArr.push(int);
-      }
-    }
-  });
-
-  return allIntArr;
-
-};
+  const findDay = state.days.find(d => d.name === day);
+  if (!findDay) {
+    return [];
+  }
+  const interviewersForDay = findDay.interviewers.map(id => state.interviewers[id]);
+  return interviewersForDay;
+}

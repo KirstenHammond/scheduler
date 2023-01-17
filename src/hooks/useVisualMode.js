@@ -4,7 +4,6 @@ export default function useVisualMode(initial) {
   const [mode, setMode] = useState(initial);
   const [history, setHistory] = useState([initial])
 
-  //TBC NEED MENTOR CALL
   function transition(newMode, replace = false) {
     //console.log('mode', mode);
     setMode(newMode);

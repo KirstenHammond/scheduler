@@ -4,6 +4,7 @@ import Button from "components/Button";
 
 export default function Form(props) {
 
+  console.log("form props", props);
   const [student, setStudent] = useState(props.student || ""); //If the data already exists, use it as the default. Otherwise, use ""/null
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
 

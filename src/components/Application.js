@@ -1,57 +1,46 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 
+//hooks
+import useApplicationData from "hooks/useApplicationData";
 //components
 import DayList from "./DayList";
 import Appointment from "./Appointment";
 
 //helpers
-import { getAppointmentsForDay, getInterview } from "helpers/selectors";
+import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "helpers/selectors";
 
 //styling
 import "components/Application.scss";
 
-
 export default function Application(props) {
 
-  //using state object to manage multiple states held within
-  const [state, setState] = useState({
-    day: "Monday", //default start day
-    days: [],
-    appointments: {},
-    interviewers: {}
-  });
-
-  const setDay = day => setState({ ...state, day });
-
-  useEffect(() => {
-    Promise.all([
-      axios.get('/api/days'),
-      axios.get('/api/appointments'),
-      axios.get('/api/interviewers')
-    ]).then((all) => {
-      // console.log(all[0]); // first
-      // console.log(all[1]); // second
-      // console.log(all[2]); // third
-      setState(prev => ({ ...prev, days: all[0].data, appointments: all[1].data, interviewers: all[2].data }));
-    });
-  }, [])
+  //importing the useApplicationData hook
+  const {
+    state,
+    setDay,
+    bookInterview,
+    cancelInterview
+  } = useApplicationData();
 
 
-  //apts/int logic
-  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  const interviewersForDay = getInterviewersForDay(state, state.day)
   
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
+
   const listOfApts = dailyAppointments.map((apt) => {
-    const interview = getInterview(state, apt.interview);
     return (
       <Appointment
         key={apt.id}
         {...apt}
-        interview={interview}
+        interview={getInterview(state, apt.interview)}
+        bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
+        interviewersForDay={interviewersForDay}
       />
     )
   });
 
+  //console.log("state", state);
 
   return (
     <main className="layout">
@@ -264,4 +253,79 @@ setHistory(prev => ([...prev, 'CREATE']))
 useVisualMode tracks the state of each appointment in a history array in appointment item. so that back button can be used to be back track to a previous state
 
 useApplicationData will contain all the app data logic eg const state=useApplicationData() in app 
+
+jan 16 francies
+project description
+user stories
+packages
+-front end
+-back end
+
+data structure
+-what are we accessing and what do we want to do with it?
+- arrays or objects? array of objects?object of objects?
+
+mock data
+- based on structure
+
+html structure
+-header
+-main
+  -section
+  -h2
+  -form etc
+
+
+component structure
+App
+  -header
+  -statementform
+  -statementlist
+    -statementlistitem
+
+
+steps
+-planning
+-wireframe
+-erd
+
+
+const fetchruninfo = (run, pantry) = {
+  const output = []
+  for (const icon of run)
+
+
+}
+
+to know how many spots, count the amout of nuls
+days[0].appointment.filter(appointmentId => !appointments[appointmentId].interview)
+getAppointmentsforday().filter(appointment => !appointment.interview).length
+
+countfreespot(state) {
+const currentday = state.days.find(day => day.name ==== state.day)
+const aptids = currentdat.appointment
+const freespots = appointmentsIds.filter( id => state.appointments[id].interview === null).length
+return freespots
+}
+
+const updatespots = state =>{
+  const currentDAy = state.days.find(day)=> day.name===state.day)
+   const currentDAyIndex = state.days.findIndex(day)=> day.name===state.day)
+  const updatedday = {...currentDay}
+  updatedDAy.spots = countFreeSpots(state)
+
+  const updatedDats = [...state.days]
+  updatedDays[currentdaysindex] = updatedDay
+  const updatedState = {...state, days:updatedDays}
+  return udpatedState
+}
+
+
+const bookInterview(id, interview){
+  const newapt= {...state.appointents[id]}
+  newapt.interview = interview
+  const updatedAppointments= {...state.appointments, [id]:newAppt}
+  const updatedState ={...state, appointments:updatedAppointments}
+  const updatedupdateState = updateSpots(updatedState)
+  setState(updatedupdatedstate)
 */

@@ -1,8 +1,9 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
+import updateSpots from 'helpers/updateSpots';
 import axios from "axios";
 
-export default function useApplicationData(){
-   
+export default function useApplicationData() {
+
   //using state object to manage multiple states held within
   const [state, setState] = useState({
     day: "Monday", //default start day
@@ -13,7 +14,7 @@ export default function useApplicationData(){
 
   const setDay = day => setState({ ...state, day });
 
-//Fetches data from API
+  //Fetches data from API
   useEffect(() => {
     Promise.all([
       axios.get('/api/days'),
@@ -24,12 +25,7 @@ export default function useApplicationData(){
     });
   }, [])
 
-function countFreeSpots(state){
-  const currentDay = state.days.find(day => day.name === state.day);
-  return currentDay;
-}
-console.log('freespots', countFreeSpots(state));
-
+ 
   //Add interview object to appointment object @ id
   function bookInterview(id, interview) {
     const appointment = {
@@ -42,14 +38,13 @@ console.log('freespots', countFreeSpots(state));
       [id]: appointment
     };
 
-    
-    return axios.put(`/api/appointments/${id}`, appointment)//
-      .then(() => {
+
+    return axios.put(`/api/appointments/${id}`, appointment).then(() => {
+        const days = updateSpots(state, appointments);
         setState({
-          ...state,
-          appointments
+          ...state, appointments, days
         });
-        console.log("appointment saved");
+        //console.log("appointment saved");
       })
   }
 
@@ -67,17 +62,16 @@ console.log('freespots', countFreeSpots(state));
 
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
+        const days = updateSpots(state, appointments);
         setState({
-          ...state,
-          appointments
-        });
-        console.log("appointment deleted");
+          ...state, appointments, days});
+        //console.log("appointment deleted");
       })
   }
 
   return {
-    state, 
-    setDay, 
+    state,
+    setDay,
     bookInterview,
     cancelInterview
   }

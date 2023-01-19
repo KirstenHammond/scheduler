@@ -1,33 +1,36 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+//Full list of available interviewers render based on the day
 
-import InterviewerListItem from './InterviewerListItem';
-import 'components/InterviewerList.scss';
+import React from "react";
+import PropTypes from "prop-types";
+
+import InterviewerListItem from "./InterviewerListItem";
+import "../styles/InterviewerList.scss";
 
 export default function InterviewerList(props) {
-  //incoming props = .interviewers (obj {name id avatar}) .onChange(fn) .interviewer (the id of selected interviewer)
-  // const [value, onChange] = useState();
-  const fullListofInterviewers = props.interviewers.map((int) =>
+
+  const {interviewers, value, onChange} = props;
+
+  const fullListofInterviewers = interviewers.map((int) => (
     <InterviewerListItem
       key={int.id}
       name={int.name}
       id={int.id}
       avatar={int.avatar}
-      selected={int.id === props.value}
-      setInterviewer={()=> props.onChange(int.id)}
-    />)
-
+      selected={int.id === value}
+      setInterviewer={() => onChange(int.id)}
+    />
+  ));
 
   return (
     <section className="interviewers">
       <h4 className="interviewers__header text--light">Interviewer</h4>
-      <ul className="interviewers__list">
-        {fullListofInterviewers}
-      </ul>
+      <ul className="interviewers__list">{fullListofInterviewers}</ul>
     </section>
   );
 }
 
 InterviewerList.propTypes = {
-  interviewers : PropTypes.array.isRequired //isRequired add warning in console stating what the expected type should be
-}
+  interviewers: PropTypes.array.isRequired, //isRequired adds warning in console stating what the expected type should be
+  value: PropTypes.number,
+  onChange: PropTypes.func.isRequired
+};

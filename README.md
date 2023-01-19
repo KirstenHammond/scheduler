@@ -20,7 +20,7 @@ Unit, integration and end-to-end testing has been implemented with Storybook, Je
   - [Application.js](/src/components/Application.js)
 2. [Individual appointment components](/src/components/Appointment)
 3. [Custom Hooks](/src/hooks)
-4. [Storybook stories](/src/stories)
+4. [Storybook stories](/stories)
 5. [Jest Unit and Integration Testing for components](/src/components/__tests__)
 6. [Cypress end-to-end tests](/cypress/integration)
 

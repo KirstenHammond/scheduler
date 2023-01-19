@@ -1,25 +1,25 @@
-import { useState } from 'react';
+import { useState } from "react";
 
+/** useVisualMode
+ * Imported into Appointment/index.js
+ * @param {*} initial initial mode to render from
+ * @returns an object {mode, transition, back}
+ */
 export default function useVisualMode(initial) {
   const [mode, setMode] = useState(initial);
-  const [history, setHistory] = useState([initial])
+  const [history, setHistory] = useState([initial]);
 
   function transition(newMode, replace = false) {
-    //console.log('mode', mode);
     setMode(newMode);
 
     if (!replace) {
-      setHistory(prev => [...prev, newMode]);
-    }
-    else {
+      setHistory((prev) => [...prev, newMode]);
+    } else {
       const historyCopy = [...history];
       historyCopy.pop();
       setHistory([...historyCopy, newMode]);
     }
   }
-
-  //console.log('mode in between', mode);
-  //console.log('history in between', history);
 
   function back() {
     if (history.length > 1) {
@@ -28,11 +28,11 @@ export default function useVisualMode(initial) {
       setMode(historyCopy[historyCopy.length - 1]);
       setHistory(historyCopy);
     }
-  };
+  }
 
   return {
     mode,
     transition,
-    back
-  }
-};
+    back,
+  };
+}

@@ -13,6 +13,17 @@ Unit, integration and end-to-end testing has been implemented with Storybook, Je
 ![Confirm deleting](./public/images/screenshots/Confirm.png)
 ![Showing booked appointments](./public/images/screenshots/Show.png)
 ![Error when saving or deleting](./public/images/screenshots/Error.png)
+
+---
+## Contents
+1. [Core application components](/src/components)
+  - [Application.js](/src/components/Application.js)
+2. [Individual appointment components](/src/components/Appointment)
+3. [Custom Hooks](/src/hooks)
+4. [Storybook stories](/src/stories)
+5. [Jest Unit and Integration Testing for components](/src/components/__tests__)
+6. [Cypress end-to-end tests](/cypress/integration)
+
 ---
 
 ## Getting Started
@@ -29,7 +40,7 @@ Unit, integration and end-to-end testing has been implemented with Storybook, Je
 
 ## Dependencies
 
-- React
+- React 
 - Webpack, Babel
 - Axios
 - Storybook, Jest, Cypress, Testing Library

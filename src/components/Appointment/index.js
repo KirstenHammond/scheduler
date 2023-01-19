@@ -69,8 +69,8 @@ export default function Appointment(props) {
       {mode === CONFIRM && <Confirm message='Are you sure you would like to delete?' onConfirm={deleteApt} onCancel={back} />}
       {mode === DELETING && <Status message='Deleting' />}
       {mode === EDIT && <Form interviewer={props.interview.interviewer.id} student={props.interview.student} interviewers={props.interviewersForDay} onCancel={back} onSave={save} />}
-      {mode === ERROR_SAVE && <Error message="Could not save appointment." onClose={back}/>}
-      {mode === ERROR_DELETE && <Error message="Could not delete appointment." onClose={back}/>}
+      {mode === ERROR_SAVE && <Error message="Could not save appointment" onClose={back}/>}
+      {mode === ERROR_DELETE && <Error message="Could not delete appointment" onClose={back}/>}
     </article>
   );
 }
